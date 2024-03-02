@@ -29,6 +29,8 @@ app.post("/queryFiles", async (req, res) => {
   }
 });
 
+app.post("/addDataToPinecone", (req, res) => {}); // extend to upload files to pinecone index to fetch more data
+
 app.listen(process.env.PORT || "8080", () => {
   console.log("server.js 13 | listenning on port 8080");
 });

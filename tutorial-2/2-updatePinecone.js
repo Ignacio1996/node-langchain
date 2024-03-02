@@ -44,7 +44,7 @@ const updatePinecone = async (client, indexName, docs) => {
       );
       const batchSize = 100;
       let batch = [];
-      for (let idx = 0; idx < chunks.lenth; idx++) {
+      for (let idx = 0; idx < chunks.length; idx++) {
         const chunk = chunks[idx];
         const vector = {
           id: `${txtPath}_${idx}`,
@@ -60,7 +60,7 @@ const updatePinecone = async (client, indexName, docs) => {
         batch.push(vector);
 
         if (batch.length === batchSize || idx === chunks.length - 1) {
-          await index.upsert({ values: batch });
+          await index.upsert(batch);
           batch = [];
         }
       }
@@ -75,6 +75,14 @@ const updatePinecone = async (client, indexName, docs) => {
       "2-updatePinecone.js 4 | error updating pinecone",
       error.message
     );
+  }
+};
+
+const upsertDocs = async (index, batch) => {
+  try {
+    const upserting = await index.upsert(batch);
+  } catch (error) {
+    console.log("2-updatePinecone.js 84 | error upserting", error.message);
   }
 };
 

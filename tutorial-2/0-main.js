@@ -34,7 +34,7 @@ const initPineconeClient = async () => {
 const query =
   "What are the differences between recidivism in males and females?";
 
-const indexName = "node-langchain";
+const indexName = "node-lang";
 
 const vectorDimension = 1600;
 

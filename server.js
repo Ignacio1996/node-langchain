@@ -1,5 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const { initPineconeClient, queryingPineconeAndGPT } = require("./data");
+
+const indexName = "node-lang";
 
 const app = express();
 
@@ -9,11 +12,15 @@ app.use(bodyParser.json());
 app.post("/queryFiles", async (req, res) => {
   const { query } = req.body;
 
-  console.log("server.js 7 | body", query, !query);
+  const client = await initPineconeClient();
+
+  console.log("server.js 14 | got client", client);
+
+  const result = await queryingPineconeAndGPT(client, indexName, query);
 
   if (query) {
     res.json({
-      received: "Hello!",
+      result: result,
     });
   } else {
     res.json({

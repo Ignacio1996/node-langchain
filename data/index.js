@@ -51,4 +51,8 @@ const start = async () => {
   }
 };
 
-start();
+module.exports = {
+  initPineconeClient,
+  updatePinecone,
+  queryingPineconeAndGPT,
+};

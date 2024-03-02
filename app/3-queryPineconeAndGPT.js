@@ -44,8 +44,10 @@ const queryingPineconeAndGPT = async (client, indexName, query) => {
       });
 
       console.log("3-queryPineconeAndGPT.js 45 | answer", result.text);
+      return result.text;
     } else {
       console.log("3-queryPineconeAndGPT.js 47 | no matches");
+      return "No matches";
     }
   } catch (error) {
     console.log("3-queryPineconeAndGPT.js 50 | error", error.message);

@@ -5,9 +5,9 @@ const { PDFLoader } = require("langchain/document_loaders/fs/pdf");
 
 require("dotenv").config();
 
-const createPineConeIndex = require("./1-createPineconeIndex");
-const updatePinecone = require("./2-updatePinecone");
-const queryingPineconeAndGPT = require("./3-queryPineconeAndGPT");
+const createPineConeIndex = require("../app/1-createPineconeIndex");
+const updatePinecone = require("../app/2-updatePinecone");
+const queryingPineconeAndGPT = require("../app/3-queryPineconeAndGPT");
 
 const loadDocs = async () => {
   console.log("0-main.js 10 | loading docs...");

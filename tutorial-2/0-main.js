@@ -36,7 +36,7 @@ const query =
 
 const indexName = "node-lang";
 
-const vectorDimension = 1600;
+const vectorDimension = 1536;
 
 const start = async () => {
   try {

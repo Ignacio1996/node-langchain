@@ -1,0 +1,69 @@
+const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
+const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
+
+require("dotenv").config();
+
+const updatePineconeSingleDoc = async (client, indexName, doc) => {
+  try {
+    console.log("updating pinecone with a single doc...");
+
+    const index = await client.Index(indexName);
+    console.log("index retrieved", index);
+
+    console.log("processing doc", doc.metadata.source);
+
+    const txtPath = doc.metadata.source;
+    const text = doc.pageContent;
+
+    const textSplitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 1000,
+    });
+
+    console.log("splitting text into chunks...");
+
+    const chunks = await textSplitter.createDocuments([text]);
+    console.log("text split into", chunks.length);
+    console.log("calling openai embeddings...");
+
+    const embeddingsArray = await new OpenAIEmbeddings({
+      openAIApiKey: process.env.OPENAI_KEY,
+    }).embedDocuments(
+      chunks.map((chunk) => chunk.pageContent.replace(/\n/g, ""))
+    );
+
+    console.log("finished embedding documents");
+    console.log(
+      "creating",
+      chunks.length,
+      "vectors array with id, values and metadata"
+    );
+
+    const batchSize = 100;
+    let batch = [];
+    for (let idx = 0; idx < chunks.length; idx++) {
+      const chunk = chunks[idx];
+      const vector = {
+        id: `${txtPath}_${idx}`,
+        values: embeddingsArray[idx],
+        metadata: {
+          ...chunk.metadata,
+          loc: JSON.stringify(chunk.metadata.loc),
+          pageContent: chunk.pageContent,
+          txtPath: txtPath,
+        },
+      };
+
+      batch.push(vector);
+
+      if (batch.length === batchSize || idx === chunks.length - 1) {
+        await index.upsert(batch);
+        batch = [];
+      }
+    }
+    console.log("Pinecone Index updated with", chunks.length, "vectors");
+  } catch (error) {
+    console.log("error updating pinecone", error.message);
+  }
+};
+
+module.exports = updatePineconeSingleDoc;

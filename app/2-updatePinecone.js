@@ -78,12 +78,4 @@ const updatePinecone = async (client, indexName, docs) => {
   }
 };
 
-const upsertDocs = async (index, batch) => {
-  try {
-    const upserting = await index.upsert(batch);
-  } catch (error) {
-    console.log("2-updatePinecone.js 84 | error upserting", error.message);
-  }
-};
-
 module.exports = updatePinecone;
